@@ -112,7 +112,7 @@ var handleCancel = function(modal, params) {
   }
 
   if (params.closeOnCancel) {
-    sweetAlert.close();
+    sweetAlert.close(false);
   }
 };
 

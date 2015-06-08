@@ -1,4 +1,4 @@
-var gulp = require('gulp'); 
+var gulp = require('gulp');
 
 var glob       = require('glob');
 var path       = require('path');
@@ -13,6 +13,8 @@ var browserify = require('browserify');
 var source     = require('vinyl-source-stream');
 var buffer     = require('vinyl-buffer');
 var wrap       = require('gulp-wrap');
+var connect    = require('gulp-connect');
+var livereload = require('gulp-livereload');
 
 // Lint Task
 gulp.task('lint', function() {
@@ -31,13 +33,15 @@ gulp.task('sass', function() {
   gulp.src('example/example.scss')
     .pipe(sass())
     .pipe(rename('example.css'))
-    .pipe(gulp.dest('example'));
+    .pipe(gulp.dest('example'))
+    .pipe(livereload());
 
   // (We don't use minifyCSS since it breaks the ie9 file for some reason)
   gulp.src(['dev/sweetalert.scss', 'dev/ie9.css'])
     .pipe(sass())
     .pipe(concat('sweetalert.css'))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist'))
+    .pipe(livereload());
 });
 
 
@@ -70,7 +74,8 @@ gulp.task('scripts', function() {
     .pipe(wrap({
       src: './dev/gulpfile-wrap-template.js'
     }))
-    .pipe(gulp.dest('dist')) // Developer version
+    .pipe(gulp.dest('dist'))
+    .pipe(livereload()) // Developer version
 
     .pipe(rename('sweetalert.min.js'))
     .pipe(buffer())
@@ -80,10 +85,18 @@ gulp.task('scripts', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
+  livereload.listen()
   gulp.watch(['dev/*.js', 'dev/*/*.js'], ['lint', 'scripts']);
   gulp.watch(['dev/*.scss', 'dev/*.css'], ['sass']);
   gulp.watch('themes/*/*.scss', ['themes']);
 });
 
+gulp.task('connect', function(){
+  connect.server({
+    livereload: true,
+    port: 9000
+  })
+});
+
 // Default Task
-gulp.task('default', ['lint', 'sass', 'scripts', 'watch']);
+gulp.task('default', ['lint', 'sass', 'scripts', 'connect', 'watch']);

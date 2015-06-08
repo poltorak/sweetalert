@@ -6,10 +6,10 @@
  * jQuery-like functions for manipulating the DOM
  */
 import {
-  hasClass, addClass, removeClass, 
-  escapeHtml, 
-  _show, show, _hide, hide, 
-  isDescendant, 
+  hasClass, addClass, removeClass,
+  escapeHtml,
+  _show, show, _hide, hide,
+  isDescendant,
   getTopMargin,
   fadeIn, fadeOut,
   fireClick,
@@ -133,7 +133,7 @@ sweetAlert = swal = function() {
   var modal = getModal();
 
 
-  /* 
+  /*
    * Make sure all modal buttons respond to all events
    */
   var $buttons = modal.querySelectorAll('button');
@@ -189,7 +189,11 @@ sweetAlert.setDefaults = swal.setDefaults = function(userParams) {
 /*
  * Animation when closing modal
  */
-sweetAlert.close = swal.close = function() {
+sweetAlert.close = swal.close = function(resolved) {
+  if(resolved === null) {
+    resolved = true;
+  }
+
   var modal = getModal();
 
   fadeOut(getOverlay(), 5);
@@ -231,6 +235,8 @@ sweetAlert.close = swal.close = function() {
   }
   lastFocusedButton = undefined;
   clearTimeout(modal.timeout);
+
+  $(document).trigger('sweetAlert:close', [{resolved: resolved}]);
 
   return true;
 };
