@@ -40,6 +40,23 @@ Tutorial
 The easiest way to get started is follow the [SweetAlert tutorial on Ludu](https://www.ludu.co/lesson/how-to-use-sweetalert)!
 
 
+What's added
+------------
+jQuery event after sweetAlert dialog is closed. It returns object `{resolved: true|false}` which determines if dialog was closed by clicking `OK` (then `resolved` is `true`) or by `Cancel` (then `resolved` is set to `false`).
+
+Listen event by simple code
+```
+$(document).on('sweetAlert:close', function(event, data) {
+    if(data.resolved){
+        /* then do sth cool because everything is fine */
+    }
+    else {
+        /* do nothing because sweet dialog was cancelled */
+    }
+});
+```
+**Note:** Event can be listened only on `document` selector beacuse there it is triggered.
+
 Examples
 --------
 
